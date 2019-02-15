@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HPSM_FTS", "HPSM_FTS\HPSM_FTS.csproj", "{A9FB15FA-E636-4348-A47B-CE0A46949CDD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9FB15FA-E636-4348-A47B-CE0A46949CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9FB15FA-E636-4348-A47B-CE0A46949CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9FB15FA-E636-4348-A47B-CE0A46949CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9FB15FA-E636-4348-A47B-CE0A46949CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4101D01-D267-4784-982B-5A71AEE1FE87}
+	EndGlobalSection
+EndGlobal
