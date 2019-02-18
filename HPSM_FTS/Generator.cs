@@ -26,9 +26,9 @@ namespace HPSM_FTS
 						Dictionary<string, ExcelUtillite.TableIner> table_list
 							= excel.LoadExcelAllTable_only_Data(
 										PathExcel: filename,
-										column_indexs_check_row: new int[] { 2, 5 },
+										column_indexs_check_row: new int[] { 1, 2 },
 										countemptyrow: 50,
-										count_column: 9,
+										count_column: 14,
 										WorksheetNames: new HashSet<string> { "Лист1" });
 
 						List<Incendent> list = new List<Incendent>();
@@ -38,15 +38,16 @@ namespace HPSM_FTS
 							foreach (var item in table_rasp_ip.Value.Row)
 							{
 								Incendent i = new Incendent();
-								i.Number = int.Parse(item[0].ToString());
-								i.ENC = item[1].ToString();
-								i.Opened = (DateTime)item[2];
-								i.Closed = (DateTime)item[3];
+								i.ENC = item[0].ToString();
+								i.Opened = (DateTime)item[1];
+								i.WorkGroup = item[4].ToString();
+								i.Applicant = item[8].ToString();
+								i.Closed = item.Length <= 9 || item[9] == null? (DateTime?) null : ((DateTime)item[9]);
+								i.Priority = item.Length <= 11 || item[11] == null? null : item[11].ToString();
+								i.ВидРаботы = item.Length <= 13 || item[13] == null? null : item[13].ToString();
+								i.Описание = item[7].ToString();
+								i.Решение = item.Length <= 10 || item[10] == null ? null :  item[10].ToString();
 								i.Subsystem = item[4].ToString();
-								i.WorkProccess = item[5].ToString();
-								i.Priority = item[6].ToString();
-								i.CategoryWork = item[7].ToString();
-								i.NameWork = item[8].ToString();
 								list.Add(i);
 							}
 						}
@@ -86,6 +87,8 @@ namespace HPSM_FTS
 
 				foreach (var item in datalist.GroupBy(q => q.ClosedDateString))
 				{
+					if (string.IsNullOrEmpty(item.Key))
+						continue;
 					string Date = item.Key;
 					int C = item.Count();
 
@@ -94,6 +97,7 @@ namespace HPSM_FTS
 					else
 						ret.Report1[Date] = new Report1Data() { ClosedCount = C };
 				}
+				ret.IncendentList = datalist;
 				this.Log.Trace("Процесс заверщен");
 				return ret;
 			}

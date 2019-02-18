@@ -28,67 +28,150 @@ namespace HPSM_FTS
 				System.Threading.Thread.Sleep(1000);
 				Excel.Worksheet worksheet_last = null;
 
-				Excel.Worksheet worksheet_report1 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
-				worksheet_last = worksheet_report1;
-				worksheet_report1.Name = string.Format("открытозакрыто");
-				string[] columns_report1 = new string[]
 				{
+					Excel.Worksheet worksheet_report1 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
+					worksheet_last = worksheet_report1;
+					worksheet_report1.Name = string.Format("открытозакрыто");
+					string[] columns_report1 = new string[]
+					{
 					"Дата",
 					"Открыто заявок",
 					"Завершено заявок"
-				};
-				int iColumn = 1;
-				foreach (var column_name in columns_report1)
-				{
-					Excel.Range r = worksheet_report1.Cells[1, iColumn];
-					r.Value = column_name;
-					iColumn++;
-				}
-				int iRow = 2;
-
-				DateTime fest = data.Report1.Keys.Select(q => DateTime.Parse(q)).Min();
-				DateTime last = data.Report1.Keys.Select(q => DateTime.Parse(q)).Max();
-				DateTime festDay = new DateTime(fest.Year, fest.Month, 1);
-				DateTime lastDay = new DateTime(last.Year, last.Month,  DateTime.DaysInMonth(last.Year, last.Month));
-
-				for (DateTime i = festDay; i <= lastDay; i = i.AddDays(1))
-				{
-					string currentdate = i.ToShortDateString();
-					Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
-
-					if (data.Report1.ContainsKey(currentdate))
+					};
+					int iColumn = 1;
+					foreach (var column_name in columns_report1)
 					{
-						range_data_row.Value = new object[]
-							{
+						Excel.Range r = worksheet_report1.Cells[1, iColumn];
+						r.Value = column_name;
+						iColumn++;
+					}
+					int iRow = 2;
+
+					DateTime fest = data.Report1.Keys.Select(q => DateTime.Parse(q)).Min();
+					DateTime last = data.Report1.Keys.Select(q => DateTime.Parse(q)).Max();
+					DateTime festDay = new DateTime(fest.Year, fest.Month, 1);
+					DateTime lastDay = new DateTime(last.Year, last.Month, DateTime.DaysInMonth(last.Year, last.Month));
+
+					for (DateTime i = festDay; i <= lastDay; i = i.AddDays(1))
+					{
+						string currentdate = i.ToShortDateString();
+						Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+
+						if (data.Report1.ContainsKey(currentdate))
+						{
+							range_data_row.Value = new object[]
+								{
 								currentdate,
 								data.Report1[currentdate].OpenedCount,
 								data.Report1[currentdate].ClosedCount,
-							};
+								};
+						}
+						else
+						{
+							range_data_row.Value = new object[] { currentdate, null, null, };
+						}
+						if (i.DayOfWeek == DayOfWeek.Sunday || i.DayOfWeek == DayOfWeek.Saturday)
+							range_data_row.Interior.Color = Excel.XlRgbColor.rgbLightBlue;
+						iRow++;
 					}
-					else
-					{
-						range_data_row.Value = new object[] { currentdate, null, null, };
-					}
-					if(i.DayOfWeek == DayOfWeek.Sunday || i.DayOfWeek == DayOfWeek.Saturday)
-						range_data_row.Interior.Color = Excel.XlRgbColor.rgbLightBlue;
-					iRow++;
+
+					//foreach (var rect in data.Report1)
+					//{
+					//	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+					//	range_data_row.Value = new object[]
+					//		{
+					//			rect.Key,
+					//			rect.Value.OpenedCount,
+					//			rect.Value.ClosedCount,
+					//		};
+					//	iRow++;
+					//}
+					Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
+					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
+					worksheet_report1.Columns.AutoFit();
 				}
 
-				//foreach (var rect in data.Report1)
-				//{
-				//	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
-				//	range_data_row.Value = new object[]
-				//		{
-				//			rect.Key,
-				//			rect.Value.OpenedCount,
-				//			rect.Value.ClosedCount,
-				//		};
-				//	iRow++;
-				//}
-				Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
-				range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
-				range.Borders.Weight = Excel.XlBorderWeight.xlThin;
-				worksheet_report1.Columns.AutoFit();
+				{
+					Excel.Worksheet worksheet_report2 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
+					worksheet_last = worksheet_report2;
+					worksheet_report2.Name = string.Format("Акты выполненные работ");
+					string[] columns_report2 = new string[]
+					{
+					"№ акт.",
+					"Нормер заявки",
+					"Этап",
+					"ФИО пользователя",
+					"Контакные данные",
+					"IP адрес/сетевое имя:",
+					"Наименование и серийный номер средства вычислительной техники",
+					"Время начала работ",
+					"Время окончания работ",
+					"Приоритет",
+					"Выполненная процедура",
+					"Суть проблемы",
+					"Проведенные работы",
+					"Представитель Заказчика"
+					};
+					int iColumn = 1;
+					foreach (var column_name in columns_report2)
+					{
+						Excel.Range r = worksheet_report2.Cells[1, iColumn];
+						r.Value = column_name;
+						iColumn++;
+					}
+
+					List<Phase> PhaseList = new List<Phase>();
+					PhaseList.Add(new Phase(1, new DateTime(2018, 12, 28), new DateTime(2019, 2, 28)));
+					PhaseList.Add(new Phase(2, new DateTime(2019, 3, 01), new DateTime(2019, 5, 31)));
+					PhaseList.Add(new Phase(3, new DateTime(2019, 6, 01), new DateTime(2019, 8, 31)));
+					PhaseList.Add(new Phase(4, new DateTime(2019, 9, 01), new DateTime(2019, 12, 10)));
+					PhaseList.Add(new Phase(5, new DateTime(2019, 12, 11), new DateTime(2020, 2, 29)));
+					PhaseList.Add(new Phase(6, new DateTime(2020, 3, 01), new DateTime(2020, 5, 31)));
+					PhaseList.Add(new Phase(7, new DateTime(2020, 6, 01), new DateTime(2020, 8, 31)));
+					PhaseList.Add(new Phase(8, new DateTime(2020, 9, 01), new DateTime(2020, 12, 10)));
+
+					int iRow = 2;
+					foreach (Incendent item in data.IncendentList)
+					{
+						Excel.Range range_data_row = worksheet_report2.Range[worksheet_report2.Cells[iRow, 1], worksheet_report2.Cells[iRow, columns_report2.Length]];
+						Phase P = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
+						range_data_row.Value = new object[]
+							{
+								iRow -1,
+								item.ENC,
+								P == null ? "-" : P.ToString(),
+								item.Applicant,
+								"",
+								"",
+								"",
+								item.Opened,
+								item.Closed,
+								item.Priority,
+								item.ВидРаботы,
+								item.Описание,
+								item.Решение,
+								item.Subsystem == "ДС" ? "Карпунина Т.Н" : "Сутягин А.Н."
+							};						
+						iRow++;
+					}
+
+					//foreach (var rect in data.Report1)
+					//{
+					//	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+					//	range_data_row.Value = new object[]
+					//		{
+					//			rect.Key,
+					//			rect.Value.OpenedCount,
+					//			rect.Value.ClosedCount,
+					//		};
+					//	iRow++;
+					//}
+					Excel.Range range = worksheet_report2.Range[worksheet_report2.Cells[1, 1], worksheet_report2.Cells[iRow - 1, iColumn - 1]];
+					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
+					worksheet_report2.Columns.AutoFit();
+				}
 				this.Log.Trace(string.Format("Данные сохранены  в файл {0}", NameFileExcel));
 			}
 			catch (Exception ex)
