@@ -151,7 +151,7 @@ namespace HPSM_FTS
 								item.ВидРаботы,
 								item.Описание,
 								item.Решение,
-								item.Subsystem == "ДС" ? "Карпунина Т.Н" : "Сутягин А.Н."
+								item.Subsystem == "ДС" ? "Сутягин А.Н." : "Карпунина Т.Н" 
 							};						
 						iRow++;
 					}
