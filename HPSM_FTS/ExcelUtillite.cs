@@ -99,7 +99,7 @@ namespace HPSM_FTS
 					string[] columns_report2 = new string[]
 					{
 					"№ акт.",
-					"Нормер заявки",
+					"Номер заявки",
 					"Этап",
 					"ФИО пользователя",
 					"Контакные данные",
@@ -134,7 +134,8 @@ namespace HPSM_FTS
 					int iRow = 2;
 					foreach (Incendent item in data.IncendentList)
 					{
-						Excel.Range range_data_row = worksheet_report2.Range[worksheet_report2.Cells[iRow, 1], worksheet_report2.Cells[iRow, columns_report2.Length]];
+						Excel.Range range_data_row = worksheet_report2.Range[worksheet_report2.Cells[iRow, 1], 
+                            worksheet_report2.Cells[iRow, columns_report2.Length]];
 						Phase P = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
 						range_data_row.Value = new object[]
 							{
