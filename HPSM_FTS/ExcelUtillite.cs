@@ -262,7 +262,7 @@ namespace HPSM_FTS
 							continue;
 					}
 					
-					this.Log.Trace(string.Format("Загрзука Excel Worksheet \"{0}\"", WorkSheetName));
+					this.Log.Trace(string.Format("Загрузка Excel Worksheet \"{0}\"", WorkSheetName));
 					var watch_count = System.Diagnostics.Stopwatch.StartNew();
 
 					object[,] row_value_all = (object[,])xlWorkSheet.UsedRange.Value;
@@ -299,7 +299,8 @@ namespace HPSM_FTS
 					}
 					list.Add(WorkSheetName, table);
 					watch_count.Stop();
-					Log.Trace(string.Format("Загрузен Excel Worksheet \"{0}\" за время {1}. Размерность {2}x{3} результируюшая {4}х{5}", WorkSheetName, watch_count.Elapsed, row_value_all.GetLength(0), row_value_all.GetLength(1), table.Row.Count, table.Column.Length));
+					Log.Trace(string.Format("Загружен Excel Worksheet \"{0}\" за время {1}. Размерность {2}x{3} результирующая {4}х{5}", 
+                        WorkSheetName, watch_count.Elapsed, row_value_all.GetLength(0), row_value_all.GetLength(1), table.Row.Count, table.Column.Length));
 				}
 				return list;
 			}
@@ -360,7 +361,7 @@ namespace HPSM_FTS
 						if (!WorksheetNames.Contains(xlWorkSheet.Name))
 							continue;
 					}
-					this.Log.Trace(string.Format("Загрзука Excel Worksheet \"{0}\"", xlWorkSheet.Name));
+					this.Log.Trace(string.Format("Загрузка Excel Worksheet \"{0}\"", xlWorkSheet.Name));
 					List<string> ColumntList = new List<string>();
 					for (int col_idx = 1; col_idx <= count_column; col_idx++)
 					{
