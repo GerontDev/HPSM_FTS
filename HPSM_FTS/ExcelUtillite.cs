@@ -95,7 +95,7 @@ namespace HPSM_FTS
 				{
 					Excel.Worksheet worksheet_report2 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
 					worksheet_last = worksheet_report2;
-					worksheet_report2.Name = string.Format("Акты выполненные работ");
+					worksheet_report2.Name = string.Format("Акты выполненных работ");
 					string[] columns_report2 = new string[]
 					{
 					"№ акт.",

@@ -41,7 +41,7 @@ namespace HPSM_FTS
 				_Target = new NlogMemoryTarget("WindowLog", NLog.LogLevel.Trace, NLog.LogLevel.Error);
 				_Target.Log += MessageLog;
 				_logger = NLog.LogManager.GetLogger("WindowLog");
-				this.Title += string.Format(" (Программа от {0})", GetLinkerTime(Assembly.GetExecutingAssembly()).ToString());
+				//this.Title += string.Format(" (Программа от {0})", GetLinkerTime(Assembly.GetExecutingAssembly()).ToString());
 			}
 			catch (Exception ex)
 			{
@@ -56,7 +56,7 @@ namespace HPSM_FTS
 
 		public void EnableRun(bool value)
 		{
-			btnRun.Dispatcher.Invoke(() => { btnRun.IsEnabled = value; btnStop.IsEnabled = !value; });
+			btnRun.Dispatcher.Invoke(() => { btnRun.IsEnabled = value;  });
 		}
 
 		public void MessageLog(string msg, Exception ex)

@@ -13,8 +13,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" Margin="3" Name="tbFileName" IsReadOnly="true" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"></TextBox>
-        <Button Grid.Row="1" Margin="321,3" Width="150" Name="btnRun" HorizontalAlignment="Center" Click="btnRun_Click">Запуск обработки данных</Button>
-        <Button Grid.Row="1" Margin="0,3,3,3" Width="150" Name="btnStop" HorizontalAlignment="Right" Click="btnRun_Click">Остановка</Button>
+        <Button Grid.Row="1" Margin="322,3.4,263.6,3.2" Width="208" Name="btnRun" HorizontalAlignment="Center" Click="btnRun_Click">Запуск обработки данных</Button>
         <TextBox Grid.Row="2" Margin="3" Name="tbLog" IsReadOnly="true" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"></TextBox>
     </Grid>
 </Window>
