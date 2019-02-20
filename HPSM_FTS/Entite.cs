@@ -211,4 +211,32 @@ namespace HPSM_FTS
 		/// </summary>
 		public string CustomerRepresentative { get; set; }
 	}
+
+	public class Contact
+	{
+		public string Name { get; set; }
+		public string Phone { get; set; }
+		public string Email { get; set; }
+		public string Tite { get; set; }
+		public string Address1 { get; set; }
+		public string Address2 { get; set; }
+		public string Dept_Name { get; set; }
+	}
+
+	public class NetName
+	{
+		public string PCName { get; set; }
+		public string IP { get; set; }
+		public string Text1 { get; set; }
+		public string NameUser { get; set; }
+		public string Date1 { get; set; }
+		public string Time1 { get; set; }
+	}
+
+	public class DataMain
+	{
+		public Dictionary<string, Contact> Contactlist { get; set; }
+		public List<Incendent> Incendent { get; set; }
+		public Dictionary<string, NetName> NetNameList { get; set; }
+	}
 }

@@ -16,10 +16,10 @@ namespace HPSM_FTS
 			this.Log = logger;
 		}
 
-		public List<Incendent> LoadData(string filename, bool filterGroup)
+		public DataMain LoadData(string filename, bool filterGroup)
 		{
 			this.Log.Trace("Загрузка данных");
-			var task_IP_table = Task.Run(
+			var Incendent_table = Task.Run(
 					() =>
 					{
 						var excel = new ExcelUtillite(this.Log);
@@ -42,9 +42,9 @@ namespace HPSM_FTS
 								i.Opened = (DateTime)item[1];
 								i.WorkGroup = item[4].ToString();
 								i.Applicant = item[8].ToString();
-								i.Closed = item[9] == null? (DateTime?) null : ((DateTime)item[9]);
-								
-								string sPriority = item[11] == null? null : item[11].ToString();
+								i.Closed = item[9] == null ? (DateTime?)null : ((DateTime)item[9]);
+
+								string sPriority = item[11] == null ? null : item[11].ToString();
 
 								if (sPriority == "Обычный")
 								{
@@ -69,22 +69,91 @@ namespace HPSM_FTS
 								else
 									throw new Exception(string.Format("Не извесный тип приоретета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
 
-								i.ВидРаботы =  item[13] == null? null : item[13].ToString();
+								i.ВидРаботы = item[13] == null ? null : item[13].ToString();
 								i.Описание = item[7].ToString();
-								i.Решение = item[10] == null ? null :  item[10].ToString();
+								i.Решение = item[10] == null ? null : item[10].ToString();
 								i.Subsystem = item[4].ToString();
-                                if (filterGroup && !(i.Subsystem == "ОДСИПЕАИСТОГПДС" ||
-                                   i.Subsystem == "АСВДТО"))
-                                    continue;
+								if (filterGroup && !(i.Subsystem == "ОДСИПЕАИСТОГПДС" ||
+								   i.Subsystem == "АСВДТО"))
+									continue;
 								list.Add(i);
 							}
 						}
 						return list;
 					}
 				);
-			
-			Task.WaitAll(task_IP_table);
-			return task_IP_table.GetAwaiter().GetResult();
+
+			var DicNetName_table = Task.Run(
+				() =>
+				{
+					var list = new Dictionary<string, NetName>(); 
+					string FullName = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Properties.Settings.Default.FileNameDicNetName);
+					foreach (var itemRow in System.IO.File.ReadAllLines(FullName))
+					{
+						if (string.IsNullOrEmpty(itemRow))
+							continue;
+						string[] columnvalue = itemRow.Split(';');
+
+						if (columnvalue.Length < 6)
+							continue;
+						string name = columnvalue[3];
+
+						if (list.ContainsKey(name))
+							continue;
+
+						NetName i = new NetName();					
+						i.PCName = columnvalue[0];
+						i.IP = columnvalue[1];
+						i.Text1 = columnvalue[2];
+						i.NameUser = columnvalue[3];
+						i.Date1 = columnvalue[4];
+						i.Text1 = columnvalue[5];
+						list.Add(i.NameUser, i);
+					}
+					return list;
+				}
+			);
+
+			var DicContact_table = Task.Run(
+				() =>
+				{
+					var excel = new ExcelUtillite(this.Log);
+					Dictionary<string, ExcelUtillite.TableIner> table_list = excel.LoadExcelAllTable_only_Data(
+						PathExcel: System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Properties.Settings.Default.FilaNameDicContact),
+						column_indexs_check_row: new int[] { 1 },
+						countemptyrow: 0,
+						count_column: 7,
+						WorksheetNames: new HashSet<string> { "Выгрузка контактов" });
+
+					var list = new Dictionary<string, Contact>();
+
+					foreach (var table_rasp_ip in table_list)
+					{
+						foreach (var item in table_rasp_ip.Value.Row)
+						{
+							Contact i = new Contact();
+							i.Name = item[0].ToString().Trim();
+							i.Phone = item[1].ToString().Trim();
+							i.Email = item[2].ToString().Trim();
+							i.Tite = item[3].ToString().Trim();
+							if (!item[4].ToString().Contains("NULL"))
+								i.Address1 = item[4].ToString().Trim();
+							if (!item[5].ToString().Contains("NULL"))
+								i.Address2 = item[5].ToString().Trim();
+							i.Dept_Name = item[6].ToString().Trim();
+							list.Add(i.Name, i);
+						}
+					}
+					return list;
+				});
+
+			Task.WaitAll(Incendent_table, DicContact_table, DicNetName_table);
+			return new DataMain()
+			{
+				Incendent = Incendent_table.GetAwaiter().GetResult(),
+				Contactlist = DicContact_table.GetAwaiter().GetResult(),
+				NetNameList = DicNetName_table.GetAwaiter().GetResult()
+			};
 		}		
 
 		public class Setting
@@ -329,7 +398,7 @@ namespace HPSM_FTS
 			return res;
 		}
 
-		public DataResult Run(List<Incendent> datalist, Setting setting)
+		public DataResult Run(DataMain datalist, Setting setting)
 		{
 			this.Log.Trace("Процесс обработки");
 
@@ -338,7 +407,7 @@ namespace HPSM_FTS
 				DataResult ret = new DataResult();
 				ret.Report1 = new Report1Result();
 
-				foreach (var item in datalist.GroupBy(q => q.OpenedDateString))
+				foreach (var item in datalist.Incendent.GroupBy(q => q.OpenedDateString))
 				{
 					string Date = item.Key;
 					int C = item.Count();
@@ -348,7 +417,7 @@ namespace HPSM_FTS
 						ret.Report1[Date] = new Report1Data() { OpenedCount = C };
 				}
 
-				foreach (var item in datalist.GroupBy(q => q.ClosedDateString))
+				foreach (var item in datalist.Incendent.GroupBy(q => q.ClosedDateString))
 				{
 					if (string.IsNullOrEmpty(item.Key))
 						continue;
@@ -360,7 +429,7 @@ namespace HPSM_FTS
 					else
 						ret.Report1[Date] = new Report1Data() { ClosedCount = C };
 				}
-				ret.Report2 = Report2(datalist);
+				ret.Report2 = Report2(datalist.Incendent);
 				this.Log.Trace("Процесс заверщен");
 				return ret;
 			}
