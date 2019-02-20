@@ -171,10 +171,59 @@ namespace HPSM_FTS
 		/// Заявитель
 		/// </summary>
 		public string Applicant { get; set; }
-		/// <summary>
-		/// 
-		/// </summary>
-		public String OpenedDateString
+
+        public string FIO
+        {
+            get
+            {
+                var index = Applicant.IndexOf('(');
+                if (index <= 0)
+                    return string.Empty;
+
+                string fio = (Applicant.Contains('(') ?
+                    Applicant.Substring(
+                    startIndex: 0, length: index) : "");
+                return fio;
+            }
+        }
+
+        public string FIOandNameLoginOnly
+        {
+            get
+            {
+                var index = Applicant.IndexOf('(');
+                if (index <= 0)
+                    return string.Empty;
+
+                return string.Format(@"{0}({1})", FIO, NameLoginOnly);
+            }
+        }
+        public string Login
+        {
+            get
+            {
+                var index = Applicant.IndexOf('(');
+                if (index <= 0)
+                    return string.Empty;
+
+                string shortname = (Applicant.Contains('(') ? Applicant.Substring(
+                    startIndex: index + 1,
+                    length: Applicant.Count() - index - 2) : "");
+                return shortname;
+            }
+        }
+        public string NameLoginOnly
+        {
+            get
+            {
+                string l = Login;
+
+                if (l.IndexOf('@') < 0)
+                    return String.Empty;
+                return l.Substring(0, l.IndexOf('@'));
+            }
+        }
+        public String OpenedDateString
 		{
 			get
 			{

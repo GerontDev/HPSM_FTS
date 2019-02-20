@@ -132,7 +132,7 @@ namespace HPSM_FTS
 								item.ClosedDateString,
 								item.ENC,
 								item.Phase.ToString(),
-								item.Applicant,
+								item.FIOandNameLoginOnly,
 								item.Контакт,
 								item.IPAndName,
 								"",
