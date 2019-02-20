@@ -386,7 +386,9 @@ namespace HPSM_FTS
 					Number =i,
 					ВидРаботы = item.ВидРаботы,
 					Описание = item.Описание,
-					Решение = item.Решение
+					Решение = item.Решение, 
+					Priority = item.Priority
+
 				};
 				i++;
 				report2.Phase = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
