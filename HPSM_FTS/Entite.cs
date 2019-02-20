@@ -68,18 +68,17 @@ namespace HPSM_FTS
 		/// </summary>
 		public string Решение { get; set; }
 		/// <summary>
-		/// Приоритет
+		/// Приорететь
 		/// </summary>
-		public string Priority { get; set; }
+		public EPriority Priority { get; set; }
+	}
 
-		///// <summary>
-		///// Категория работ
-		///// </summary>
-		//public string CategoryWork { get; set; }
-		///// <summary>
-		///// Название работ
-		///// </summary>
-		//public string NameWork { get; set; }
+	public enum EPriority
+	{
+		Обычный,
+		Важный,
+		Высокий,
+		Требуется_вмешательство_более_квалифицированного_специалиста
 	}
 
 	public class Report1Data
@@ -96,7 +95,7 @@ namespace HPSM_FTS
 	public class DataResult
 	{
 		public Report1Result Report1 { get; set; }
-		public List<Incendent> IncendentList { get; set; }
+		public List<Report2> Report2 { get; set; }
 	}
 
 
@@ -116,5 +115,100 @@ namespace HPSM_FTS
 		{
 			return string.Format("Этапа {0} ({1}-{2})", Number, Begin.ToShortDateString(), End.ToShortDateString());
 		}
+	}
+
+
+	public class Report2
+	{
+		/// <summary>
+		/// №п/п
+		/// </summary>
+		public int Number { get; set; }
+		/// <summary>
+		/// ИНЦ
+		/// </summary>
+		public string ENC { get; set; }
+		/// <summary>
+		/// Фаза
+		/// </summary>
+		public Phase Phase { get; set; }
+		/// <summary>
+		/// открыто
+		/// </summary>
+		public DateTime Opened { get; set; }
+		/// <summary>
+		/// Рабочая  группа
+		/// </summary>
+		public string WorkGroup { get; set; }
+		/// <summary>
+		/// Заявитель
+		/// </summary>
+		public string Applicant { get; set; }
+		/// <summary>
+		/// 
+		/// </summary>
+		public String OpenedDateString
+		{
+			get
+			{
+				return Opened.ToShortDateString();
+			}
+		}
+		/// <summary>
+		/// закрыто
+		/// </summary>
+		public DateTime? Closed { get; set; }
+
+		public String ClosedDateString
+		{
+			get
+			{
+				return Closed == null ? "" : Closed.Value.ToShortDateString();
+			}
+		}
+		/// <summary>
+		/// Виде работы
+		/// </summary>
+		public string ВидРаботы { get; set; }
+		/// <summary>
+		/// Описание (супть проблемы)
+		/// </summary>
+		public string Описание { get; set; }
+		/// <summary>
+		/// Проведение рабоы 
+		/// </summary>
+		public string Решение { get; set; }
+		/// <summary>
+		/// Приоритет
+		/// </summary>
+		public EPriority Priority { get; set; }
+
+		public string TextPriority
+		{
+			get
+			{
+				if (Priority ==  EPriority.Обычный)
+				{
+					return "Обычный (В течение 24 часов (в течение одних суток))";
+				}
+				else if (Priority == EPriority.Важный)
+				{
+					return "Важный (Не более 2,5 часов (в течение текущего рабочего дня))";
+				}
+				else if (Priority == EPriority.Высокий)
+				{
+					return "Высокий (Не более 1 часа (в течение текущего рабочего дня))";
+				}
+				else if (Priority == EPriority.Требуется_вмешательство_более_квалифицированного_специалиста)
+				{
+					return "Требуется вмешательство более квалифицированного специалиста (В течение 48 часов (в течение двух рабочих дней с момента установления приоритета))";
+				}
+				throw new Exception("Не указан");
+			}
+		}
+		/// <summary>
+		/// Представитель Заказчика
+		/// </summary>
+		public string CustomerRepresentative { get; set; }
 	}
 }

@@ -15,7 +15,7 @@ namespace HPSM_FTS
 		{
 			Log = logger;
 		}
-
+		
 		public void SaveExcel_Mo(DataResult data, string NameFileExcel)
 		{
 			Excel.Application excel = null;
@@ -121,52 +121,29 @@ namespace HPSM_FTS
 						iColumn++;
 					}
 
-					List<Phase> PhaseList = new List<Phase>();
-					PhaseList.Add(new Phase(1, new DateTime(2018, 12, 28), new DateTime(2019, 2, 28)));
-					PhaseList.Add(new Phase(2, new DateTime(2019, 3, 01), new DateTime(2019, 5, 31)));
-					PhaseList.Add(new Phase(3, new DateTime(2019, 6, 01), new DateTime(2019, 8, 31)));
-					PhaseList.Add(new Phase(4, new DateTime(2019, 9, 01), new DateTime(2019, 12, 10)));
-					PhaseList.Add(new Phase(5, new DateTime(2019, 12, 11), new DateTime(2020, 2, 29)));
-					PhaseList.Add(new Phase(6, new DateTime(2020, 3, 01), new DateTime(2020, 5, 31)));
-					PhaseList.Add(new Phase(7, new DateTime(2020, 6, 01), new DateTime(2020, 8, 31)));
-					PhaseList.Add(new Phase(8, new DateTime(2020, 9, 01), new DateTime(2020, 12, 10)));
-
 					int iRow = 2;
-					foreach (Incendent item in data.IncendentList)
+					foreach(var item in data.Report2)
 					{
 						Excel.Range range_data_row = worksheet_report2.Range[worksheet_report2.Cells[iRow, 1], worksheet_report2.Cells[iRow, columns_report2.Length]];
-						Phase P = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
 						range_data_row.Value = new object[]
 							{
 								iRow -1,
 								item.ENC,
-								P == null ? "-" : P.ToString(),
+								item.Phase,
 								item.Applicant,
 								"",
 								"",
 								"",
 								item.Opened,
 								item.Closed,
-								item.Priority,
+								item.TextPriority,
 								item.ВидРаботы,
 								item.Описание,
 								item.Решение,
-								item.Subsystem == "АСВДТО" ? "Сутягин А.Н." : "Карпунина Т.Н" 
+								item.CustomerRepresentative
 							};						
 						iRow++;
 					}
-
-					//foreach (var rect in data.Report1)
-					//{
-					//	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
-					//	range_data_row.Value = new object[]
-					//		{
-					//			rect.Key,
-					//			rect.Value.OpenedCount,
-					//			rect.Value.ClosedCount,
-					//		};
-					//	iRow++;
-					//}
 					Excel.Range range = worksheet_report2.Range[worksheet_report2.Cells[1, 1], worksheet_report2.Cells[iRow - 1, iColumn - 1]];
 					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
 					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
