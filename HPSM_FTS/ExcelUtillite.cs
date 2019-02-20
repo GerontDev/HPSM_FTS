@@ -95,11 +95,11 @@ namespace HPSM_FTS
 				{
 					Excel.Worksheet worksheet_report2 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
 					worksheet_last = worksheet_report2;
-					worksheet_report2.Name = string.Format("Акты выполненные работ");
+					worksheet_report2.Name = string.Format("Акты выполненных работ");
 					string[] columns_report2 = new string[]
 					{
 					"№ акт.",
-					"Нормер заявки",
+					"Номер заявки",
 					"Этап",
 					"ФИО пользователя",
 					"Контакные данные",
@@ -239,7 +239,7 @@ namespace HPSM_FTS
 							continue;
 					}
 					
-					this.Log.Trace(string.Format("Загрзука Excel Worksheet \"{0}\"", WorkSheetName));
+					this.Log.Trace(string.Format("Загрузка Excel Worksheet \"{0}\"", WorkSheetName));
 					var watch_count = System.Diagnostics.Stopwatch.StartNew();
 
 					object[,] row_value_all = (object[,])xlWorkSheet.UsedRange.Value;
@@ -276,7 +276,8 @@ namespace HPSM_FTS
 					}
 					list.Add(WorkSheetName, table);
 					watch_count.Stop();
-					Log.Trace(string.Format("Загрузен Excel Worksheet \"{0}\" за время {1}. Размерность {2}x{3} результируюшая {4}х{5}", WorkSheetName, watch_count.Elapsed, row_value_all.GetLength(0), row_value_all.GetLength(1), table.Row.Count, table.Column.Length));
+					Log.Trace(string.Format("Загружен Excel Worksheet \"{0}\" за время {1}. Размерность {2}x{3} результирующая {4}х{5}", 
+                        WorkSheetName, watch_count.Elapsed, row_value_all.GetLength(0), row_value_all.GetLength(1), table.Row.Count, table.Column.Length));
 				}
 				return list;
 			}
@@ -337,7 +338,7 @@ namespace HPSM_FTS
 						if (!WorksheetNames.Contains(xlWorkSheet.Name))
 							continue;
 					}
-					this.Log.Trace(string.Format("Загрзука Excel Worksheet \"{0}\"", xlWorkSheet.Name));
+					this.Log.Trace(string.Format("Загрузка Excel Worksheet \"{0}\"", xlWorkSheet.Name));
 					List<string> ColumntList = new List<string>();
 					for (int col_idx = 1; col_idx <= count_column; col_idx++)
 					{
