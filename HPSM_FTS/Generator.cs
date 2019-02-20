@@ -16,7 +16,7 @@ namespace HPSM_FTS
 			this.Log = logger;
 		}
 
-		public List<Incendent> LoadData(string filename)
+		public List<Incendent> LoadData(string filename, bool filterGroup)
 		{
 			this.Log.Trace("Загрузка данных");
 			var task_IP_table = Task.Run(
@@ -69,6 +69,9 @@ namespace HPSM_FTS
 								i.Описание = item[7].ToString();
 								i.Решение = item[10] == null ? null :  item[10].ToString();
 								i.Subsystem = item[4].ToString();
+                                if (filterGroup && !(i.Subsystem == "ОДСИПЕАИСТОГПДС" ||
+                                   i.Subsystem == "АСВДТО"))
+                                    continue;
 								list.Add(i);
 							}
 						}
@@ -158,8 +161,10 @@ namespace HPSM_FTS
 
 		public DateTime GeneratorDateTimeBegin(DateTime Closed, int minutes_min, int minutes_max)
 		{
-			DateTime MaxDateTime = Closed.AddMinutes(minutes_max);
-			DateTime MinDateTime = Closed.AddMinutes(minutes_min);
+            return Closed.AddMinutes(-27);
+
+			//DateTime MaxDateTime = Closed.AddMinutes(minutes_max);
+			//DateTime MinDateTime = Closed.AddMinutes(minutes_min);
 
 			//if (MaxDateTime.Hour < BeginWorkHours) // Первод на предедушкий день
 			//{
@@ -201,7 +206,7 @@ namespace HPSM_FTS
 			//if (dtRnd.DayOfWeek >= DayOfWeek.Saturday)
 			//	dtRnd = dtRnd.AddDays(2);
 
-			return Closed;
+			//return Closed;
 		}
 
 		public DateTime GeneratorClosed(DateTime Opened, EPriority priority)

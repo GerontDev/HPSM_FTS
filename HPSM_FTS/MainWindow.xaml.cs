@@ -115,7 +115,9 @@ namespace HPSM_FTS
 				{
 				};
 				tbLog.Text = string.Empty;
-				Task.Run(() =>
+                bool filterGroup = workGroupFilter.IsChecked.Value;
+
+                Task.Run(() =>
 				{
 					EnableRun(false);
 					NLog.ILogger logger = null;
@@ -129,7 +131,7 @@ namespace HPSM_FTS
 
 						logger = NLog.LogManager.GetLogger("WindowLog");
 						var gan = new Generator(logger);
-						var data = gan.LoadData(openFileDialog.FileName);
+						var data = gan.LoadData(openFileDialog.FileName, filterGroup);
 						var result = gan.Run(data, setting);
 						logger.Trace("Сохранение файла");
 						var exelsave = new ExcelUtillite(logger);
