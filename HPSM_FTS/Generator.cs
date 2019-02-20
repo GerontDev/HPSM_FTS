@@ -156,6 +156,54 @@ namespace HPSM_FTS
 			return dtRnd;
 		}
 
+		public DateTime GeneratorDateTimeBegin(DateTime Closed, int minutes_min, int minutes_max)
+		{
+			DateTime MaxDateTime = Closed.AddMinutes(minutes_max);
+			DateTime MinDateTime = Closed.AddMinutes(minutes_min);
+
+			//if (MaxDateTime.Hour < BeginWorkHours) // Первод на предедушкий день
+			//{
+			//	DateTime DateTime_ = MaxDateTime.AddDays(-1);
+			//	DateTime_ = new DateTime(MaxDateTime.Year, MaxDateTime.Month, MaxDateTime.Day, EndWorkHours, 0, 0);
+			//	var gap = DateTime_.Subtract(MaxDateTime);
+			//	minutes_max -= (int)gap.TotalMinutes;
+			//	MaxDateTime = DateTime_;
+			//}
+
+			//if (MaxDateTime.Hour > EndWorkHours) // Первод конец дня
+			//{
+			//	DateTime DateTime_ = new DateTime(MaxDateTime.Year, MaxDateTime.Month, MaxDateTime.Day, EndWorkHours, 0, 0);
+			//	var gap = MaxDateTime.Subtract(DateTime_);
+			//	minutes_max -= (int)gap.TotalMinutes;
+			//	MaxDateTime = DateTime_;
+			//}
+
+			//if (MinDateTime.Hour > EndWorkHours)
+			//{
+			//	DateTime DateTime_ = MaxDateTime.AddDays(1);
+			//	DateTime_ = new DateTime(MaxDateTime.Year, MaxDateTime.Month, MaxDateTime.Day, EndWorkHours, 0, 0);
+
+			//	var gap = MaxDateTime.Subtract(MaxDateTime);
+			//	minutes_min -= (int)gap.TotalMinutes;
+			//	MinDateTime = DateTime_;
+			//}
+
+			//DateTime dtRnd = begin;
+
+			//do
+			//{
+			//	int minute = rnd.Next(minutes_min, minutes_max);
+			//	dtRnd = begin.AddMinutes(minute);
+			//}
+			//while (dtRnd.Hour < BeginWorkHours || dtRnd.Hour > EndWorkHours);
+
+			////если поподаеть выходные все переносим на понедельник
+			//if (dtRnd.DayOfWeek >= DayOfWeek.Saturday)
+			//	dtRnd = dtRnd.AddDays(2);
+
+			return Closed;
+		}
+
 		public DateTime GeneratorClosed(DateTime Opened, EPriority priority)
 		{
 			if (priority == EPriority.Обычный)

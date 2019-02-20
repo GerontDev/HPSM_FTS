@@ -41,24 +41,24 @@ namespace UnitTestProject
 			int minute_max = (int)(2.5 * 60);
 
 			{
-				var Opened = new System.DateTime(2019, 2, 18, 9, 10, 10);
-				var genDate = gen.GeneratorTimeBegin(Opened, 15, minute_max);
-				var s = Opened.Subtract(genDate);
-				Assert.IsTrue(Opened.ToShortDateString() == genDate.ToShortDateString());
+				var End = new System.DateTime(2019, 2, 18, 9, 10, 10);
+				var genDate = gen.GeneratorTimeBegin(End, 15, minute_max);
+				var s = End.Subtract(genDate);
+				Assert.IsTrue(End.ToShortDateString() == genDate.ToShortDateString());
 				Assert.IsTrue(s.TotalMinutes < minute_max);
 				Assert.IsTrue(genDate.Hour < Generator.EndWorkHours);
-				Assert.IsTrue(Opened > genDate);
+				Assert.IsTrue(End > genDate);
 			}
 
 			{
-				var Opened = new System.DateTime(2019, 2, 20, 15, 45, 10);
-				var genDate = gen.GeneratorTimeBegin(Opened, 15, minute_max);
-				var s = Opened.Subtract(genDate);
+				var End = new System.DateTime(2019, 2, 20, 15, 45, 10);
+				var genDate = gen.GeneratorTimeBegin(End, 15, minute_max);
+				var s = End.Subtract(genDate);
 
-				Assert.IsTrue(Opened.ToShortDateString() == genDate.ToShortDateString());
+				Assert.IsTrue(End.ToShortDateString() == genDate.ToShortDateString());
 				Assert.IsTrue(s.TotalMinutes < minute_max);
 				Assert.IsTrue(genDate.Hour < Generator.EndWorkHours);
-				Assert.IsTrue(Opened > genDate);
+				Assert.IsTrue(End > genDate);
 			}
 		}
 
