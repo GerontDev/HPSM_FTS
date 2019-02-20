@@ -24,11 +24,11 @@ namespace HPSM_FTS
 					{
 						var excel = new ExcelUtillite(this.Log);
 						Dictionary<string, ExcelUtillite.TableIner> table_list
-							= excel.LoadExcelAllTable_only_Data(
+							= excel.LoadExcelAllTable(
 										PathExcel: filename,
 										column_indexs_check_row: new int[] { 1, 2 },
 										countemptyrow: 50,
-										count_column: 14,
+										max_count_column: 15,
 										WorksheetNames: new HashSet<string> { "Лист1" });
 
 						List<Incendent> list = new List<Incendent>();
@@ -69,7 +69,7 @@ namespace HPSM_FTS
 								else
 									throw new Exception(string.Format("Не извесный тип приоретета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
 
-								i.ВидРаботы = item[13] == null ? null : item[13].ToString();
+								i.ВидРаботы = item.Length <=13 || item[13] == null ? null : item[13].ToString();
 								i.Описание = item[7].ToString();
 								i.Решение = item[10] == null ? null : item[10].ToString();
 								i.Subsystem = item[4].ToString();
@@ -79,6 +79,7 @@ namespace HPSM_FTS
 								list.Add(i);
 							}
 						}
+						this.Log.Trace(string.Format("Загрузена инцендентов {0}", list.Count));
 						return list;
 					}
 				);
@@ -96,20 +97,21 @@ namespace HPSM_FTS
 
 						if (columnvalue.Length < 6)
 							continue;
-						string name = columnvalue[3];
+						string name = columnvalue[3].Trim();
 
-						if (list.ContainsKey(name))
+						if (list.ContainsKey(name.ToLower()))
 							continue;
 
 						NetName i = new NetName();					
-						i.PCName = columnvalue[0];
-						i.IP = columnvalue[1];
+						i.PCName = columnvalue[0].Trim();
+						i.IP = columnvalue[1].Trim();
 						i.Text1 = columnvalue[2];
-						i.NameUser = columnvalue[3];
+						i.NameUser = name;
 						i.Date1 = columnvalue[4];
 						i.Text1 = columnvalue[5];
-						list.Add(i.NameUser, i);
+						list.Add(i.NameUser.ToLower(), i);
 					}
+					this.Log.Trace(string.Format("Загрузена сетевых устройств {0}", list.Count));
 					return list;
 				}
 			);
@@ -118,11 +120,11 @@ namespace HPSM_FTS
 				() =>
 				{
 					var excel = new ExcelUtillite(this.Log);
-					Dictionary<string, ExcelUtillite.TableIner> table_list = excel.LoadExcelAllTable_only_Data(
+					Dictionary<string, ExcelUtillite.TableIner> table_list = excel.LoadExcelAllTable(
 						PathExcel: System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), Properties.Settings.Default.FilaNameDicContact),
 						column_indexs_check_row: new int[] { 1 },
-						countemptyrow: 0,
-						count_column: 7,
+						countemptyrow: 1,
+						max_count_column: 8,
 						WorksheetNames: new HashSet<string> { "Выгрузка контактов" });
 
 					var list = new Dictionary<string, Contact>();
@@ -133,17 +135,23 @@ namespace HPSM_FTS
 						{
 							Contact i = new Contact();
 							i.Name = item[0].ToString().Trim();
-							i.Phone = item[1].ToString().Trim();
+							if (!item[1].ToString().Contains("NULL"))
+								i.Phone = item[1].ToString().Trim();
 							i.Email = item[2].ToString().Trim();
 							i.Tite = item[3].ToString().Trim();
 							if (!item[4].ToString().Contains("NULL"))
 								i.Address1 = item[4].ToString().Trim();
+							else
+								i.Address1 = string.Empty;
 							if (!item[5].ToString().Contains("NULL"))
 								i.Address2 = item[5].ToString().Trim();
+							else
+								i.Address2 = string.Empty;
 							i.Dept_Name = item[6].ToString().Trim();
-							list.Add(i.Name, i);
+							list.Add(i.Name.ToLower(), i);
 						}
 					}
+					this.Log.Trace(string.Format("Загрузена контактов {0}", list.Count));
 					return list;
 				});
 
@@ -353,7 +361,7 @@ namespace HPSM_FTS
 			return false;
 		}
 
-		public List<Report2> Report2(List<Incendent> datalist)
+		public List<Report2> Report2(DataMain datalist)
 		{
 			List<Report2> res = new List<Report2>();
 
@@ -368,7 +376,7 @@ namespace HPSM_FTS
 			PhaseList.Add(new Phase(8, new DateTime(2020, 9, 01), new DateTime(2020, 12, 10)));
 
 			int i = 1;
-			foreach (Incendent item in datalist)
+			foreach (Incendent item in datalist.Incendent)
 			{
 				Report2 report2 = new Report2()
 				{
@@ -383,14 +391,44 @@ namespace HPSM_FTS
 				i++;
 				report2.Phase = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
 
+
+				if (!string.IsNullOrEmpty(item.Applicant))
+				{
+					if (datalist.Contactlist.ContainsKey(report2.Applicant.ToLower()))
+					{
+						var c = datalist.Contactlist[report2.Applicant.ToLower()];
+						report2.Контакт = string.Format("{0}, {1}", c.Address2, c.Phone);
+						if (report2.Контакт.StartsWith(","))
+							report2.Контакт = report2.Контакт.Substring(1);
+					}
+					else
+						Log.Warn(string.Format("Контакт для пользователя {0} не найден", report2.Applicant));
+
+					string shortName = item.NameLoginOnly.ToLower();
+					if (!string.IsNullOrEmpty(shortName) && datalist.NetNameList.ContainsKey(shortName))
+					{
+						var c = datalist.NetNameList[shortName];
+						report2.IPAndName = string.Format("{0}/{1}", c.IP, c.PCName);
+					}
+					else
+						Log.Warn(string.Format("Не найдено сетвео устройства для пользователя {0}", report2.Applicant));
+				}
+
+
 				if (item.Closed == null)
 				{
-					item.Closed = GeneratorClosed(item.Opened, item.Priority);
+					report2.Closed = GeneratorClosed(item.Opened, item.Priority);
+					Log.Trace(string.Format("Инцендент {0} не закрыть", report2.ENC));
 				}
 				else if (!IsValideClosedOpened(item.Opened, item.Closed.Value, item.Priority))
 				{
-					item.Opened = GeneratorOpened(item.Closed.Value, item.Priority);
+					Log.Trace(string.Format("Инцендент {0} привышен норматив времени закрытие", report2.ENC));
+					report2.Opened = GeneratorOpened(item.Closed.Value, item.Priority);
 				}
+
+				if (report2.Closed == DateTime.MinValue)
+					report2.Closed = item.Closed.Value;
+
 
 				report2.CustomerRepresentative = item.Subsystem == "АСВДТО" ? "Сутягин А.Н." : "Карпунина Т.Н";
 				res.Add(report2);
@@ -429,7 +467,7 @@ namespace HPSM_FTS
 					else
 						ret.Report1[Date] = new Report1Data() { ClosedCount = C };
 				}
-				ret.Report2 = Report2(datalist.Incendent);
+				ret.Report2 = Report2(datalist);
 				this.Log.Trace("Процесс заверщен");
 				return ret;
 			}

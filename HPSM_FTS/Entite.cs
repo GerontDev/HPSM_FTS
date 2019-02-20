@@ -28,6 +28,33 @@ namespace HPSM_FTS
 		/// Заявитель
 		/// </summary>
 		public string Applicant { get; set; }
+
+		public string Login
+		{
+			get
+			{
+				var index = Applicant.IndexOf('(');
+				if (index <= 0)
+					return string.Empty;
+
+				string shortname = (Applicant.Contains('(') ? Applicant.Substring(
+					startIndex: index + 1,
+					length: Applicant.Count() - index - 2 ) : "");
+				return shortname;
+			}
+		}
+
+		public string NameLoginOnly
+		{
+			get
+			{
+				string l = Login;
+
+				if (l.IndexOf('@') < 0)
+					return String.Empty;
+				return l.Substring(0, l.IndexOf('@'));
+			}
+		}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -157,13 +184,13 @@ namespace HPSM_FTS
 		/// <summary>
 		/// закрыто
 		/// </summary>
-		public DateTime? Closed { get; set; }
+		public DateTime Closed { get; set; }
 
 		public String ClosedDateString
 		{
 			get
 			{
-				return Closed == null ? "" : Closed.Value.ToShortDateString();
+				return Closed == null ? "" : Closed.ToShortDateString();
 			}
 		}
 		/// <summary>
@@ -210,6 +237,10 @@ namespace HPSM_FTS
 		/// Представитель Заказчика
 		/// </summary>
 		public string CustomerRepresentative { get; set; }
+
+		public string Контакт { get; set; }
+
+		public string IPAndName { get; set; }
 	}
 
 	public class Contact

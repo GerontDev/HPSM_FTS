@@ -127,15 +127,15 @@ namespace HPSM_FTS
 						Excel.Range range_data_row = worksheet_report2.Range[worksheet_report2.Cells[iRow, 1], worksheet_report2.Cells[iRow, columns_report2.Length]];
 						range_data_row.Value = new object[]
 							{
-								iRow -1,
+								item.Number,
 								item.ENC,
-								item.Phase,
+								item.Phase.ToString(),
 								item.Applicant,
+								item.Контакт,
+								item.IPAndName,
 								"",
-								"",
-								"",
-								item.Opened,
-								item.Closed,
+								item.Opened.ToString(),
+								item.Closed.ToString(),
 								item.TextPriority,
 								item.ВидРаботы,
 								item.Описание,
