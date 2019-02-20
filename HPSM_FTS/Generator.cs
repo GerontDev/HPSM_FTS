@@ -62,8 +62,12 @@ namespace HPSM_FTS
 								{
 									i.Priority = EPriority.Требуется_вмешательство_более_квалифицированного_специалиста;
 								}
+								else if (string.IsNullOrEmpty(sPriority))
+								{
+									i.Priority = EPriority.Обычный;
+								}
 								else
-									throw new Exception(string.Format("Не извесный тип исключения \"{0}\"", sPriority));
+									throw new Exception(string.Format("Не извесный тип приоретета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
 
 								i.ВидРаботы =  item[13] == null? null : item[13].ToString();
 								i.Описание = item[7].ToString();
