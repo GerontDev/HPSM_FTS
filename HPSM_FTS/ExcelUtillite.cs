@@ -99,6 +99,7 @@ namespace HPSM_FTS
 					string[] columns_report2 = new string[]
 					{
 					"№ акт.",
+					"Дата закрытие",
 					"Номер заявки",
 					"Этап",
 					"ФИО пользователя",
@@ -128,6 +129,7 @@ namespace HPSM_FTS
 						range_data_row.Value = new object[]
 							{
 								item.Number,
+								item.ClosedDateString,
 								item.ENC,
 								item.Phase.ToString(),
 								item.Applicant,
