@@ -99,7 +99,7 @@ namespace HPSM_FTS
 					string[] columns_report2 = new string[]
 					{
 					"№ акт.",
-					"Дата закрытие",
+					"Дата закрытия",
 					"Номер заявки",
 					"Этап",
 					"ФИО пользователя",
@@ -151,7 +151,7 @@ namespace HPSM_FTS
 					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
 					worksheet_report2.Columns.AutoFit();
 				}
-				this.Log.Trace(string.Format("Данные сохранены  в файл {0}", NameFileExcel));
+				this.Log.Trace(string.Format("Данные сохранены в файл {0}", NameFileExcel));
 			}
 			catch (Exception ex)
 			{

@@ -67,7 +67,7 @@ namespace HPSM_FTS
 									i.Priority = EPriority.Обычный;
 								}
 								else
-									throw new Exception(string.Format("Не извесный тип приоретета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
+									throw new Exception(string.Format("Неизвестный тип приоритета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
 
 								i.ВидРаботы = item.Length <=13 || item[13] == null ? null : item[13].ToString();
 								i.Описание = item[7].ToString();
@@ -79,7 +79,7 @@ namespace HPSM_FTS
 								list.Add(i);
 							}
 						}
-						this.Log.Trace(string.Format("Загрузена инцендентов {0}", list.Count));
+						this.Log.Trace(string.Format("Загружено инцидентов {0}", list.Count));
 						return list;
 					}
 				);
@@ -111,7 +111,7 @@ namespace HPSM_FTS
 						i.Text1 = columnvalue[5];
 						list.Add(i.NameUser.ToLower(), i);
 					}
-					this.Log.Trace(string.Format("Загрузена сетевых устройств {0}", list.Count));
+					this.Log.Trace(string.Format("Загружено сетевых устройств {0}", list.Count));
 					return list;
 				}
 			);
@@ -151,7 +151,7 @@ namespace HPSM_FTS
 							list.Add(i.Name.ToLower(), i);
 						}
 					}
-					this.Log.Trace(string.Format("Загрузена контактов {0}", list.Count));
+					this.Log.Trace(string.Format("Загружено контактов {0}", list.Count));
 					return list;
 				});
 
@@ -308,7 +308,7 @@ namespace HPSM_FTS
 			{
 				return GeneratorDateTimeEnd(Opened, 24 * 60, 48 * 60);
 			}
-			else throw new Exception("Приорететь не указан");
+			else throw new Exception("Приоритет не указан");
 		}
 
 		public DateTime GeneratorOpened(DateTime Closed, EPriority priority)
@@ -329,7 +329,7 @@ namespace HPSM_FTS
 			{
 				return GeneratorDateTimeEnd(Closed, 24 * 60, 48 * 60);
 			}
-			else throw new Exception("Приорететь не указан");
+			else throw new Exception("Приоритет не указан");
 		}
 
 		public bool IsValideClosedOpened(DateTime Opened, DateTime Closed, EPriority priority)
@@ -411,18 +411,18 @@ namespace HPSM_FTS
 						report2.IPAndName = string.Format("{0}/{1}", c.IP, c.PCName);
 					}
 					else
-						Log.Warn(string.Format("Не найдено сетвео устройства для пользователя {0}", report2.Applicant));
+						Log.Warn(string.Format("Не найдено сетевое устройство для пользователя {0}", report2.Applicant));
 				}
 
 
 				if (item.Closed == null)
 				{
 					report2.Closed = GeneratorClosed(item.Opened, item.Priority);
-					Log.Trace(string.Format("Инцендент {0} не закрыть", report2.ENC));
+					Log.Trace(string.Format("Инцидент {0} не закрыт", report2.ENC));
 				}
 				else if (!IsValideClosedOpened(item.Opened, item.Closed.Value, item.Priority))
 				{
-					Log.Trace(string.Format("Инцендент {0} привышен норматив времени закрытие", report2.ENC));
+					Log.Trace(string.Format("Инцидент {0}: превышен норматив времени закрытия", report2.ENC));
 					report2.Opened = GeneratorOpened(item.Closed.Value, item.Priority);
 				}
 
