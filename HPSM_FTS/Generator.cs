@@ -455,38 +455,44 @@ namespace HPSM_FTS
 			return list;
 		}
 
+		public Report1Result Report1(List<Report2> Incendents)
+		{
+			var list = new Report1Result();
+
+			foreach (var item in Incendents.GroupBy(q => q.OpenedDateString))
+			{
+				string Date = item.Key;
+				int C = item.Count();
+				if (list.ContainsKey(Date))
+					list[Date].OpenedCount += C;
+				else
+					list[Date] = new Report1Data() { OpenedCount = C };
+			}
+
+			foreach (var item in Incendents.GroupBy(q => q.ClosedDateString))
+			{
+				if (string.IsNullOrEmpty(item.Key))
+					continue;
+				string Date = item.Key;
+				int C = item.Count();
+
+				if (list.ContainsKey(Date))
+					list[Date].ClosedCount += C;
+				else
+					list[Date] = new Report1Data() { ClosedCount = C };
+			}
+			return list;
+		}
+
 		public DataResult Run(DataMain datalist, Setting setting)
 		{
 			this.Log.Trace("Процесс обработки");
 
 			try
 			{
-				DataResult ret = new DataResult();
-				ret.Report1 = new Report1Result();
-
-				foreach (var item in datalist.Incendent.GroupBy(q => q.OpenedDateString))
-				{
-					string Date = item.Key;
-					int C = item.Count();
-					if (ret.Report1.ContainsKey(Date))
-						ret.Report1[Date].OpenedCount += C;
-					else
-						ret.Report1[Date] = new Report1Data() { OpenedCount = C };
-				}
-
-				foreach (var item in datalist.Incendent.GroupBy(q => q.ClosedDateString))
-				{
-					if (string.IsNullOrEmpty(item.Key))
-						continue;
-					string Date = item.Key;
-					int C = item.Count();
-
-					if (ret.Report1.ContainsKey(Date))
-						ret.Report1[Date].ClosedCount += C;
-					else
-						ret.Report1[Date] = new Report1Data() { ClosedCount = C };
-				}
-				ret.Report2 = Report2(datalist);
+				DataResult ret = new DataResult();				
+				ret.Report2 = Report2(datalist);				
+				ret.Report1 = Report1(ret.Report2);
 				ret.Report3 = Report3(datalist);
 				this.Log.Trace("Процесс заверщен");
 				return ret;
