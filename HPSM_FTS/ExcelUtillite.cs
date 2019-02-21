@@ -63,11 +63,11 @@ namespace HPSM_FTS
 				iRow++;
 			}
 
-                    // Итого
-                    Excel.Range range_data_rowLast = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
-                    range_data_rowLast.Value = new object[] { null,
-                        String.Format(@"=SUM(B2:B{0})", (iRow-1).ToString()),
-                        String.Format(@"=SUM(C2:C{0})", (iRow-1).ToString())};
+            // Итого
+            Excel.Range range_data_rowLast = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+            range_data_rowLast.Value = new object[] { null,
+                String.Format(@"=SUM(B2:B{0})", (iRow-1).ToString()),
+                String.Format(@"=SUM(C2:C{0})", (iRow-1).ToString())};
 
 			Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
 			range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
