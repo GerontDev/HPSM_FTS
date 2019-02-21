@@ -75,15 +75,24 @@ namespace HPSM_FTS
 						iRow++;
 					}
 
-					Excel.Range range_data_row_count = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, 3]];
-					range_data_row_count.Value = new object[]
-							{
-								"",
-								data.Report3.Sum(q=>q.IncendentCount).ToString(),
-								data.Report3.Sum(q=>q.IncendentCount).ToString()
-							};
+                    // Итого
+                    Excel.Range range_data_rowLast = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+                    range_data_rowLast.Value = new object[] { null,
+                        String.Format(@"=SUM(B2:B{0})", (--iRow).ToString()),
+                        String.Format(@"=SUM(C2:C{0})", (--iRow).ToString())};
 
-					Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
+                    //foreach (var rect in data.Report1)
+                    //{
+                    //	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
+                    //	range_data_row.Value = new object[]
+                    //		{
+                    //			rect.Key,
+                    //			rect.Value.OpenedCount,
+                    //			rect.Value.ClosedCount,
+                    //		};
+                    //	iRow++;
+                    //}
+                    Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
 					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
 					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
 					worksheet_report1.Columns.AutoFit();
@@ -129,7 +138,7 @@ namespace HPSM_FTS
 								item.ClosedDateString,
 								item.ENC,
 								item.Phase.ToString(),
-								item.Applicant,
+								item.FIOandNameLoginOnly,
 								item.Контакт,
 								item.IPAndName,
 								"",
