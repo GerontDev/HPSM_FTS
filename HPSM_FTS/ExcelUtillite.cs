@@ -78,8 +78,8 @@ namespace HPSM_FTS
                     // Итого
                     Excel.Range range_data_rowLast = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
                     range_data_rowLast.Value = new object[] { null,
-                        String.Format(@"=SUM(B2:B{0})", (--iRow).ToString()),
-                        String.Format(@"=SUM(C2:C{0})", (--iRow).ToString())};
+                        String.Format(@"=SUM(B2:B{0})", (iRow-1).ToString()),
+                        String.Format(@"=SUM(C2:C{0})", (iRow-1).ToString())};
 
                     //foreach (var rect in data.Report1)
                     //{
