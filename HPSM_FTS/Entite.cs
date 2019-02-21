@@ -123,6 +123,7 @@ namespace HPSM_FTS
 	{
 		public Report1Result Report1 { get; set; }
 		public List<Report2> Report2 { get; set; }
+		public List<Report3> Report3 { get; set; }
 	}
 
 
@@ -268,6 +269,14 @@ namespace HPSM_FTS
 	{
 		public Dictionary<string, Contact> Contactlist { get; set; }
 		public List<Incendent> Incendent { get; set; }
-		public Dictionary<string, NetName> NetNameList { get; set; }
+		public Dictionary<string, NetName> NetNameList { get; set; }	
+	}
+
+
+	public class Report3
+	{
+		public string ViewWork { get; set; }
+		public int IncendentCount { get; set; }
+		public double Prochent { get; set; }
 	}
 }

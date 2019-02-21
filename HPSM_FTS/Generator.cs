@@ -437,6 +437,23 @@ namespace HPSM_FTS
 			}
 			return res;
 		}
+		
+		public List<Report3> Report3(DataMain datalist)
+		{
+			List<Report3> list = new List<Report3>();
+			
+			foreach (var item in datalist.Incendent.GroupBy(q => q.ВидРаботы))
+			{
+				list.Add(new Report3()
+				{
+					ViewWork = item.Key,
+					IncendentCount = item.Count(),
+					Prochent = ((double)item.Count()) / datalist.Incendent.Count
+				});
+			}
+
+			return list;
+		}
 
 		public DataResult Run(DataMain datalist, Setting setting)
 		{
@@ -470,6 +487,7 @@ namespace HPSM_FTS
 						ret.Report1[Date] = new Report1Data() { ClosedCount = C };
 				}
 				ret.Report2 = Report2(datalist);
+				ret.Report3 = Report3(datalist);
 				this.Log.Trace("Процесс заверщен");
 				return ret;
 			}

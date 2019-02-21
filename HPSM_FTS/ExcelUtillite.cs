@@ -75,17 +75,14 @@ namespace HPSM_FTS
 						iRow++;
 					}
 
-					//foreach (var rect in data.Report1)
-					//{
-					//	Excel.Range range_data_row = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, columns_report1.Length]];
-					//	range_data_row.Value = new object[]
-					//		{
-					//			rect.Key,
-					//			rect.Value.OpenedCount,
-					//			rect.Value.ClosedCount,
-					//		};
-					//	iRow++;
-					//}
+					Excel.Range range_data_row_count = worksheet_report1.Range[worksheet_report1.Cells[iRow, 1], worksheet_report1.Cells[iRow, 3]];
+					range_data_row_count.Value = new object[]
+							{
+								"",
+								data.Report3.Sum(q=>q.IncendentCount).ToString(),
+								data.Report3.Sum(q=>q.IncendentCount).ToString()
+							};
+
 					Excel.Range range = worksheet_report1.Range[worksheet_report1.Cells[1, 1], worksheet_report1.Cells[iRow - 1, iColumn - 1]];
 					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
 					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
@@ -150,6 +147,69 @@ namespace HPSM_FTS
 					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
 					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
 					worksheet_report2.Columns.AutoFit();
+				}
+
+				{
+					Excel.Worksheet worksheet_report3 = wb.Worksheets.Add(Type.Missing, (worksheet_last == null) ? Type.Missing : worksheet_last, Type.Missing, Type.Missing);
+					worksheet_last = worksheet_report3;
+					worksheet_report3.Name = string.Format("Общая");
+					string[] columns_report3 = new string[]
+					{
+					"",
+					"Вид работ, работы",
+					"Число заявок",
+					"% от общего числа заявок"
+					};
+					int iColumn = 1;
+					int iRow = 5;
+					foreach (var column_name in columns_report3)
+					{
+						Excel.Range r = worksheet_report3.Cells[iRow, iColumn];
+						r.Value = column_name;
+						iColumn++;
+					}
+
+					iRow++;
+					foreach (var item in data.Report3)
+					{
+						Excel.Range range_data_row = worksheet_report3.Range[worksheet_report3.Cells[iRow, 1], worksheet_report3.Cells[iRow, columns_report3.Length]];
+						range_data_row.Value = new object[]
+							{
+								"",
+								item.ViewWork,
+								item.IncendentCount,
+								string.Format("{0:P2}", item.Prochent)
+							};
+						iRow++;
+					}
+
+					Excel.Range range_data_row_count = worksheet_report3.Range[worksheet_report3.Cells[2, 1], worksheet_report3.Cells[2, 2]];
+					range_data_row_count.Value = new object[]
+							{
+								"Всего заявок:", 
+								data.Report3.Sum(q=>q.IncendentCount).ToString()
+							};
+
+					Excel.Range range_data_row_count1 = worksheet_report3.Range[worksheet_report3.Cells[3, 1], worksheet_report3.Cells[3, 2]];
+					range_data_row_count1.Value = new object[]
+							{
+								"Выполнено заявок:",
+								"100"
+							};
+
+					Excel.Range range_data_row_count3 = worksheet_report3.Range[worksheet_report3.Cells[iRow, 1], worksheet_report3.Cells[iRow, 4]];
+					range_data_row_count3.Value = new object[]
+							{
+								"",
+								"",
+								data.Report3.Sum(q=>q.IncendentCount).ToString(),
+								"100%"
+							};
+
+					Excel.Range range = worksheet_report3.Range[worksheet_report3.Cells[5, 1], worksheet_report3.Cells[iRow - 1, iColumn - 1]];
+					range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+					range.Borders.Weight = Excel.XlBorderWeight.xlThin;
+					worksheet_report3.Columns.AutoFit();
 				}
 				this.Log.Trace(string.Format("Данные сохранены в файл {0}", NameFileExcel));
 			}
