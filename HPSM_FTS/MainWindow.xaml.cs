@@ -122,12 +122,15 @@ namespace HPSM_FTS
 					EnableRun(false);
 					NLog.ILogger logger = null;
 					string name_log = string.Empty;
-
+					string PathWorkFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HPSM_FTS");
 					try
 					{
+						if (!System.IO.Directory.Exists(PathWorkFolder))
+							System.IO.Directory.CreateDirectory(PathWorkFolder);
+
 						string text_data = DateTime.Now.ToString().Replace(".", "").Replace(":", "");
-						name_log = string.Format("log_{0}.txt", text_data);
-						string name_exel = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), string.Format("result_{0}.xlsx", text_data));
+						name_log = string.Format("log_{0}.txt", text_data);						
+						string name_exel = System.IO.Path.Combine(PathWorkFolder, string.Format("result_{0}.xlsx", text_data));
 
 						logger = NLog.LogManager.GetLogger("WindowLog");
 						var gan = new Generator(logger);
@@ -152,7 +155,7 @@ namespace HPSM_FTS
 					}
 					try
 					{
-						System.IO.File.WriteAllText(name_log, this.tbLog.Dispatcher.Invoke<string>(this.GetLog));
+						System.IO.File.WriteAllText(System.IO.Path.Combine(PathWorkFolder, name_log), this.tbLog.Dispatcher.Invoke<string>(this.GetLog));
 					}
 					catch (Exception ex)
 					{
