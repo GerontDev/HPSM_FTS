@@ -46,30 +46,31 @@ namespace HPSM_FTS
 
 								string sPriority = item[11] == null ? null : item[11].ToString();
 
-								if (sPriority == "Обычный")
+                                if (string.IsNullOrEmpty(sPriority))
+                                {
+                                    i.Priority = EPriority.Обычный;
+                                }
+                                else if (sPriority.ToLower() == "обычный")
 								{
 									i.Priority = EPriority.Обычный;
 								}
-								else if (sPriority == "Важный")
+								else if (sPriority.ToLower() == "важный")
 								{
 									i.Priority = EPriority.Важный;
 								}
-								else if (sPriority == "Высокий")
+								else if (sPriority.ToLower() == "высокий")
 								{
 									i.Priority = EPriority.Высокий;
 								}
-								else if (sPriority == "Требуется вмешательство более квалифицированного специалиста")
+								else if (sPriority.ToLower() == "требуется вмешательство более квалифицированного специалиста")
 								{
 									i.Priority = EPriority.Требуется_вмешательство_более_квалифицированного_специалиста;
 								}
-								else if (string.IsNullOrEmpty(sPriority))
-								{
-									i.Priority = EPriority.Обычный;
-								}
 								else
-									throw new Exception(string.Format("Неизвестный тип приоритета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
+                                    i.Priority = EPriority.Обычный;
+                                //throw new Exception(string.Format("Неизвестный тип приоритета = \"{0}\",  ИНЦ = {1}", sPriority, i.ENC));
 
-								i.ВидРаботы = item.Length <=13 || item[13] == null ? null : item[13].ToString();
+                                i.ВидРаботы = item.Length <=13 || item[13] == null ? null : item[13].ToString();
 								i.Описание = item[7].ToString();
 								i.Решение = item[10] == null ? null : item[10].ToString();
 								i.Subsystem = item[4].ToString();
@@ -366,14 +367,14 @@ namespace HPSM_FTS
 			List<Report2> res = new List<Report2>();
 
 			List<Phase> PhaseList = new List<Phase>();
-			PhaseList.Add(new Phase(1, new DateTime(2018, 12, 28), new DateTime(2019, 2, 28)));
-			PhaseList.Add(new Phase(2, new DateTime(2019, 3, 01), new DateTime(2019, 5, 31)));
-			PhaseList.Add(new Phase(3, new DateTime(2019, 6, 01), new DateTime(2019, 8, 31)));
-			PhaseList.Add(new Phase(4, new DateTime(2019, 9, 01), new DateTime(2019, 12, 10)));
-			PhaseList.Add(new Phase(5, new DateTime(2019, 12, 11), new DateTime(2020, 2, 29)));
-			PhaseList.Add(new Phase(6, new DateTime(2020, 3, 01), new DateTime(2020, 5, 31)));
-			PhaseList.Add(new Phase(7, new DateTime(2020, 6, 01), new DateTime(2020, 8, 31)));
-			PhaseList.Add(new Phase(8, new DateTime(2020, 9, 01), new DateTime(2020, 12, 10)));
+			PhaseList.Add(new Phase(1, new DateTime(2018, 12, 28), new DateTime(2019, 3, 01)));
+			PhaseList.Add(new Phase(2, new DateTime(2019, 3, 01), new DateTime(2019, 6, 01)));
+			PhaseList.Add(new Phase(3, new DateTime(2019, 6, 01), new DateTime(2019, 9, 01)));
+			PhaseList.Add(new Phase(4, new DateTime(2019, 9, 01), new DateTime(2019, 12, 11)));
+			PhaseList.Add(new Phase(5, new DateTime(2019, 12, 11), new DateTime(2020, 3, 01)));
+			PhaseList.Add(new Phase(6, new DateTime(2020, 3, 01), new DateTime(2020, 6, 01)));
+			PhaseList.Add(new Phase(7, new DateTime(2020, 6, 01), new DateTime(2020, 9, 01)));
+			PhaseList.Add(new Phase(8, new DateTime(2020, 9, 01), new DateTime(2020, 12, 11)));
 
 			int i = 1;
 			foreach (Incendent item in datalist.Incendent)
@@ -391,7 +392,7 @@ namespace HPSM_FTS
 
 				};
 				i++;
-				report2.Phase = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened <= q.End);
+				report2.Phase = PhaseList.FirstOrDefault(q => q.Begin <= item.Opened && item.Opened < q.End);
 
 
 				if (!string.IsNullOrEmpty(item.Applicant))

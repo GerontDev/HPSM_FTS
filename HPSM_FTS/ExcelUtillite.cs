@@ -115,7 +115,7 @@ namespace HPSM_FTS
 								item.Number,
 								item.ClosedDateString,
 								item.ENC,
-								item.Phase.ToString(),
+								item.Phase is null ? "" : item.Phase.ToString(),
 								item.FIOandNameLoginOnly,
 								item.Контакт,
 								item.IPAndName,
