@@ -492,8 +492,12 @@ namespace HPSM_FTS
 			try
 			{
 				DataResult ret = new DataResult();				
-				ret.Report2 = Report2(datalist);				
-				ret.Report1 = Report1(ret.Report2);
+				ret.Report2 = Report2(datalist).OrderBy(i=>i.Opened).ToList();
+                // перенумерация
+                for(int i = 1; i< ret.Report2.Count; i++)
+                    ret.Report2[i-1].Number = i;
+                ret.Report2 = ret.Report2.OrderBy(i => i.Number).ToList();
+                ret.Report1 = Report1(ret.Report2);
 				ret.Report3 = Report3(datalist);
 				this.Log.Trace("Процесс заверщен");
 				return ret;
