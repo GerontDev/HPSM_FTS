@@ -432,7 +432,7 @@ namespace HPSM_FTS
 					report2.Closed = item.Closed.Value;
 
 
-				report2.CustomerRepresentative = item.Subsystem == "АСВДТО" ? "Сутягин А.Н." : "Карпунина Т.Н";
+				report2.CustomerRepresentative = item.Subsystem == "АСВДТО" ? "Сутягин А.Н." : "Карпунина Т.Н.";
 				res.Add(report2);
 			}
 			return res;
